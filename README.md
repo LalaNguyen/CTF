@@ -1,2 +1,2 @@
 # CTF
-Training for CTF competition
+Training for CTF competitions
