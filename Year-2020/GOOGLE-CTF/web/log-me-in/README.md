@@ -2,7 +2,7 @@
 - MySQL SELECT command (for payload construction)
 - Node JS (for prototype testing)
 
-**Task**: We are given a login form and webserver's logic. Our goal is to login as michelle.
+**Task**: We are given a login form and webserver's logic. Our goal is to login as michelle and seize the flag.
 
 **Investigation**: 
 - Test with common SQL injections. Failed
