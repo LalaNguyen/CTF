@@ -1,4 +1,4 @@
-*****Knowledge**:
+**Knowledge**:
 - Node JS (for prototype testing)
 
 **Task**: Find the flag, given a website with a submission form. 
