@@ -1,6 +1,6 @@
-Dweeder - KipodAfterFree
+# Dweeder - KipodAfterFree
 
-# Understanding
+## Understanding
 Users are allowed to compose titles and contents and submit them to the server. When @shuky is used, the admin will visit the new submissions and check them out. If the site does not sanitize the user inputs properly, malicious scripts can be injected and executed. 
 
 When a user click on the ``send Dweed!`` button, sendDweed() is invoked and the following function is involved:
@@ -55,7 +55,7 @@ static populate(template, parameters = {}) {
 }
 ```
 
-# Enumerating
+## Enumerating
 
 After a few submissions, we can observe that the two parameters (i.e., title and contents) are properly filtered not only on the server side, but also on the client side (by the HTML sanitiser).
 
@@ -80,11 +80,12 @@ curl -d "token=eyJleHBpcnkiOm51bGwsImNvbnRlbnQiOnsibmFtZSI6InRlc3QxMjMiLCJoYW5kb
 {"result":"3136303531343730333175707a74","status":true}
 
 ```
-From the 1st attemp, we knew all the parameters that the server is expecting
-From the 2nd attempt, we observed that the server allows creation of new parameters
-From the 3rd attempt, we knew that the id parameter is not properly sanitized on the server side. Strangely enough, we could have still visited the dweed using the numeric ID provided by the server. This gave us another hint: server actually uses two types of ID for a dweed, but for what purpose then? 
+From 3 attempts, we concluded a few things:
+- In the 1st attempt, we knew all the parameters that the server is expecting
+- In the second, we observed that the server allows creation of new parameters
+- In the third, we knew that the id parameter is not properly sanitized on the server side. Strangely enough, we could have still visited the dweed using the numeric ID provided by the server. This gave us another hint: server actually uses two types of ID for a dweed, but for what purpose then? 
 
-# Exploiting
+## Exploiting
 The 3rd attempt told us that we needed to look into the id field. We tried to inject code into the id parameter to close the double quote.
 ```bash
 curl -d "token=eyJleHBpcnkiOm51bGwsImNvbnRlbnQiOnsibmFtZSI6InRlc3QxMjMiLCJoYW5kbGUiOiJ0ZXN0MjEzIn19:QmTpmSxf7FunhP98U3qAWP/vgJpmEbw4XHrpBkdqVIg=&title=a&contents=a&id=\"" -X POST https://dweeder.ctf.kaf.sh/apis/dweeder/?writeDweed
